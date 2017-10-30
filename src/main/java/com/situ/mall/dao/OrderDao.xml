@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.situ.mall.dao.OrderDao">
+  	
+  	<select id="findOrderByUserId" parameterType="int" resultType="Order">
+  		SELECT * FROM `order` WHERE user_id=#{id}
+  	</select>
+  	
+  	<insert id="addOrder" parameterType="Order">
+  		insert into `order`(order_no,user_id,shipping_id,payment,payment_type,create_time,update_time)values(#{order_no},#{user_id},#{shipping_id},#{payment},#{payment_type},now(),now())
+  	</insert>
+  	
+  	<select id="findOrderItemByOrderNo" parameterType="String" resultType="OrderItem">
+  		select * from order_item where order_no=#{orderNo}
+  	</select> 
+  	
+  	<select id="findOrderNo" parameterType="int" resultType="String">
+  		select order_no from `order` where user_id=#{id}
+  	</select>
+  	
+  	<select id="findAllOrder" resultType="OrderItem">
+  		select * from order_item
+  	</select>
+  	
+  	<select id="findOrderByOrderNo" parameterType="String" resultType="Order">
+  		select * from `order` where order_no=#{orderNo}
+  	</select>
+  	
+  	<select id="findAllOrderByUserId" resultType="Order">
+  		select * from `order` where user_id=#{userId} limit #{index},3
+  	</select>
+  	
+  	<select id="findOrder" resultType="Order">
+  		select * from `order`
+  	</select>
+  	
+  	<select id="findAllOrderCount" resultType="int">
+  		select count(*) from `order`
+  	</select>
+  	
+  	<select id="findLength" parameterType="int" resultType="int">
+  		select * from `order` where user_id=#{id}
+  	</select>
+  	
+  </mapper>

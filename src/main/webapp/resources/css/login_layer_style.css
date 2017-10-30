@@ -1,0 +1,65 @@
+.login {
+	padding: 18px 30px 18px 30px;
+}
+
+.login {
+	color: #333333;
+}
+
+.login_title_1 a {
+	float: left;
+	padding: 11px 44px 14px 44px;
+	border-bottom: 2px solid #333333;
+}
+
+.login_title_2 a {
+	float: left;
+	padding: 11px 44px 14px 44px;
+	border-bottom: 2px solid #333333;
+}
+
+.login_title_1 a:hover {
+	color: #F41443;
+	border-bottom: 2px solid #F41443;
+}
+
+.login_title_2 a:hover {
+	color: #F41443;
+	border-bottom: 2px solid #F41443;
+}
+
+.login_user {
+	height: 40px;
+	width: 250px;
+	border: 1px solid #BFBFBF;
+	margin-top: 30px;
+	margin-bottom: 10px;
+	background-image: url(../img/zhanghu.png);
+	background-repeat: no-repeat;
+	padding-left: 40px;
+	background-position: 4% center;
+	
+}
+
+.login_password {
+	height: 40px;
+	width: 250px;
+	border: 1px solid #BFBFBF;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	background-image: url(../img/password.png);
+	background-repeat: no-repeat;
+	padding-left: 40px;
+	background-position: 4% center;
+}
+
+.login_btn {
+	height: 40px;
+	width: 290px;
+	background: #F41443;
+	margin-top: 10px;
+	margin-bottom: 15px;
+	border-radius: 5px 5px 5px 5px;
+	color: white;
+}
+

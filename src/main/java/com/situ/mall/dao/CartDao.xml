@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.situ.mall.dao.CartDao">
+  	
+  	<insert id="addCart" parameterType="Cart">
+  		insert into cart(user_id,product_id,quantity,checked,create_time,update_time) 
+		values(#{user_id},#{product.id},#{quantity},1,now(),now())
+  	</insert>
+  	
+  	<delete id="deleteCart" parameterType="int">
+  		delete from cart where id = #{id}
+  	</delete>
+  	
+  	<select id="findCartByUserId" parameterType="int" resultType="Cart">
+  		select * from cart where user_id=#{id}
+  	</select>
+  	
+  	<resultMap type="Cart" id="findCartAndProduct">
+  		<id column="id" property="id"/>
+  		<result column="user_id" property="user_id"/>	
+  		<result column="product_id" property="product_id"/>	
+  		<result column="quantity" property="quantity"/>	
+  		<result column="checked" property="checked"/>	
+  		<result column="create_time" property="create_time"/>	
+  		<result column="update_time" property="update_time"/>
+  		<association property="product" javaType="Product">
+  			<id column="product_id" property="id"/>
+  			<result column="name" property="name"/>
+  		</association>	
+  	</resultMap>
+  	<select id="findCartAndProductByUserId" parameterType="int" resultMap="findCartAndProduct">
+  		SELECT c.id,c.user_id,c.product_id,c.quantity,c.checked,c.create_time,c.update_time,p.id as product_id,p.name 
+		FROM cart AS c LEFT JOIN product AS p 
+		ON c.product_id=p.id WHERE user_id = #{id}
+  	</select>
+  	
+  	<update id="update" parameterType="Map">
+  		UPDATE cart SET quantity = #{quantity}+#{oldQuantity} WHERE product_id=#{product_id};
+  	</update>
+  	
+  	<select id="findCheckedCartById" parameterType="int" resultType="Cart">
+  		select * from cart where id=#{id}
+  	</select>
+  	
+  	<delete id="deleteBuyedProduct">
+  		delete from cart where product_id=#{id} and user_id=#{userId}
+   	</delete>
+  	
+  	<update id="addOneProduct">
+  		update cart set quantity = #{quantity}+1 where id=#{cartId}
+  	</update>
+  	
+  	<update id="subOneProduct">
+  		update cart set quantity = #{quantity}-1 where id=#{cartId}
+  	</update>
+  	
+  	<delete id="deleteCartByUserId" parameterType="int">
+  		delete from cart where user_id = #{userId}
+  	</delete>
+  	
+  </mapper>

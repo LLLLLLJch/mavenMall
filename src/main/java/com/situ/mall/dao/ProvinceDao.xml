@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.situ.mall.dao.ProvinceDao">
+  	
+  <select id="findProvince" resultType="Province">
+  	select * from tm_province
+  </select>
+  	
+  <select id="findCityByProvinceId" parameterType="int" resultType="City">
+  	select * from tm_city where province_id = #{id}
+  </select>
+  
+  <select id="findAreaByCityId" parameterType="int" resultType="Area">
+  	select * from  tm_area where city_id = #{id}
+  </select>
+  
+  <select id="findProvinceNameById" parameterType="String" resultType="String">
+  	select province from tm_province where id=#{id}
+  </select>
+  
+  <select id="findCityNameById" parameterType="String" resultType="String">
+  	select city from tm_city where id=#{id}
+  </select>
+  
+  <select id="findAreaNameById" parameterType="String" resultType="String">
+  	select area from tm_area where id=#{id}
+  </select>
+  
+  </mapper>

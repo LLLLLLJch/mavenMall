@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.situ.mall.dao.ProductMangerDao">
+  	
+<!--   	<resultMap type="Product" id="findProductById">
+  		<id property="id" column="id"/>
+  		<result column="name" property="name"/>
+  		<result column="subtitle" property="subtitle"/>
+  		<result column="main_image" property="main_image"/>
+  		<result column="price" property="price"/>
+  		<result column="stock" property="stock"/>
+  		<result column="status" property="status"/>
+  		<result column="create_time" property="create_time"/>
+  		<result column="update_time" property="update_time"/>
+  		<association property="category" javaType="Category">
+  			<id column="category_id" property="id"/>
+  		</association>
+  	</resultMap> -->
+  	<select id="findAllProducts" resultMap="findProduct">
+  		SELECT id,category_id,NAME,subtitle,main_image,detail,price,stock,STATUS,create_time,update_time
+		FROM product
+  	</select>
+  	
+  	<delete id="deleteProduct" parameterType="int">
+  		delete from product where id = #{id}
+  	</delete>
+  	
+  	<resultMap type="Product" id="findProductById">
+  		<id property="id" column="id"/>
+  		<result column="name" property="name"/>
+  		<result column="subtitle" property="subtitle"/>
+  		<result column="main_image" property="main_image"/>
+  		<result column="detail" property="detail"/>
+  		<result column="price" property="price"/>
+  		<result column="stock" property="stock"/>
+  		<result column="status" property="status"/>
+  		<result column="create_time" property="create_time"/>
+  		<result column="update_time" property="update_time"/>
+  		<association property="category" javaType="Category">
+  			<id column="category" property="id"/>
+  			<result column="parent" property="parent_id"/>
+  			<result column="category_name" property="name"/>
+  		</association>
+  	</resultMap>
+  	<select id="findById" resultMap="findProductById">
+  		SELECT c.id AS 'category',c.name as 'category_name',a.id AS 'parent',p.id,p.name,p.subtitle,p.main_image,p.detail,p.price,p.stock,p.create_time,p.update_time
+		FROM category AS c INNER JOIN category AS a 
+		ON c.id=a.parent_id RIGHT JOIN product AS p 
+		ON p.category_id=a.id WHERE p.id=#{id}
+  	</select>
+  	
+  	<select id="findCategoryByZero" resultType="Category">
+  		SELECT * FROM category where parent_id =0
+  	</select>
+  	
+  	<insert id="addProduct" parameterType="Product">
+  		insert into product(category_id,name,subtitle,main_image,sub_images,detail,price,stock,status,create_time)
+  		values(#{category.id},#{name},#{subtitle},#{main_image},#{sub_images},#{detail},#{price},#{stock},#{status},#{create_time})
+  	</insert>
+  	
+  	<insert id="addCategory">
+  		INSERT INTO category(parent_id,NAME,STATUS,create_time)VALUES(0,#{name},1,#{date})
+  	</insert>
+  	
+  	<select id="findCategoryID" parameterType="int" resultType="Category">
+  		select * from category where name = #{name}
+  	</select>
+  	
+  	<select id="selectSecond" parameterType="int" resultType="Category">
+  		SELECT * FROM category WHERE parent_id = #{id}
+  	</select>
+  	
+  	<update id="update" parameterType="Product">
+  		update product 
+  	<set>
+       <if test="category.id!=0">
+           category_id=#{category.id},
+       </if>
+       <if test="name!=null and name.trim()!=''">
+           name=#{name},
+       </if>
+       <if test="subtitle!=null">
+           subtitle=#{subtitle},
+       </if>
+       <if test="price!=0">
+           price=#{price},
+       </if>
+       <if test="stock!=0">
+           stock=#{stock},
+       </if>
+       <if test="status==0">
+           status=0,
+       </if>
+       <if test="status==1">
+       	   status=1,
+       </if>
+       <if test="update_time!=null">
+           update_time=#{update_time},
+       </if>
+       <if test="main_image!=null">
+           main_image=#{main_image},
+       </if>
+       <if test="sub_images!=null">
+           sub_images=#{sub_images},
+       </if>
+       <if test="detail!=null">
+           detail=#{detail},
+       </if>
+    </set>
+  		where id = #{id}
+  	</update>
+  	
+  	<select id="findTotalCount" resultType="int">
+  		select count(*) from product
+  	</select>
+  	
+  	<select id="findAll" resultMap="findProduct">
+  		SELECT id,category_id,NAME,subtitle,detail,price,stock,STATUS,create_time,update_time
+		FROM product limit #{index},#{pageSize}
+  	</select>
+  	
+  	<select id="totalCountByCondition" parameterType="FindByCondition" resultType="int">
+  		select count(*) from product 
+  		<where>
+  			<if test="id != null and id != '' ">
+  				and id = #{id}
+  			</if>
+  			<if test="status != null and status != '' ">
+  				and status = #{status}
+  			</if>
+  		</where>
+  	</select>
+  	
+  	<select id="findByCondition" parameterType="Map" resultMap="findProduct">
+  		SELECT id,category_id,NAME,subtitle,main_image,detail,price,stock,STATUS,create_time,update_time
+		FROM product
+		<where>
+			<if test="condition.id != null and condition.id != '' ">
+  				and id = #{condition.id}
+  			</if>
+  			<if test="condition.status != null and condition.status != '' ">
+  				and status = #{condition.status}
+  			</if>
+		</where>
+		 limit #{index},#{condition.pageSize}
+  	</select>
+  	
+  	<update id="updateStatus" parameterType="Product">
+  		update product 
+  		<set>
+       <if test="status == 0">
+  			status = 1,
+  		</if>
+  		<if test="status == 1">
+  			status = 0,
+  		</if>
+       </set>
+  		 where id = #{id}
+  	</update> 
+  	
+  	
+  	
+  	<select id="findAllCategory" resultType="Category">
+  		SELECT * FROM category WHERE parent_id = 0
+  	</select>
+  	
+  	<select id="findSecond" parameterType="int" resultType="Category">
+  		select * from category where parent_id = #{id}
+  	</select>
+  	
+  	<select id="findProductByCategory" parameterType="int" resultType="Product">
+  		select * from product where category_id = #{id}
+  	</select>
+  	
+  	<select id="totalCountCondition"  resultType="int">
+  		select count(*) from product 
+  		<where>
+  			<if test="condition.id != null and condition.id != '' ">
+  				and id = #{id}
+  			</if>
+  			<if test="condition.status != null and condition.status != '' ">
+  				and status = #{status}
+  			</if>
+  			<if test="value!= null and value != '' ">
+  				and category_id = #{value}
+  			</if>
+  		</where>
+  	</select>
+  	
+  	<select id="findCondition" parameterType="Map" resultMap="findProduct">
+  		SELECT id,category_id,NAME,subtitle,main_image,detail,price,stock,STATUS,create_time,update_time
+		FROM product
+		<where>
+			<if test="condition.id != null and condition.id != '' ">
+  				and id = #{condition.id}
+  			</if>
+  			<if test="condition.status != null and condition.status != '' ">
+  				and status = #{condition.status}
+  			</if>
+  			<if test="value != null and value != '' ">
+  				and category_id = #{value}
+  			</if>
+		</where>
+		 limit #{index},#{condition.pageSize}
+  	</select>
+  	
+  	<select id="findCategoryParent" parameterType="int" resultType="Category">
+  		select * from category where id = #{id}
+  	</select>
+  	
+  	<select id="findCategorySon" parameterType="int" resultType="Category">
+  		select * from category where id = #{id}
+  	</select>
+  	
+  	<select id="findSecondExceptZero" resultType="Category">
+  		select * from category where parent_id !=0
+  	</select>
+  	
+  	<resultMap type="Product" id="findProduct">
+  		<id property="id" column="id"/>
+  		<result column="name" property="name"/>
+  		<result column="subtitle" property="subtitle"/>
+  		<result column="main_image" property="main_image"/>
+  		<result column="sub_images" property="sub_images"/>
+  		<result column="detail" property="detail"/>
+  		<result column="price" property="price"/>
+  		<result column="stock" property="stock"/>
+  		<result column="status" property="status"/>
+  		<result column="create_time" property="create_time"/>
+  		<result column="update_time" property="update_time"/>
+  		<association property="category" javaType="Category">
+  			<id column="category_id" property="id"/>
+  		</association>
+  	</resultMap>
+  	<select id="findProductByIdAddCart" parameterType="int" resultMap="findProduct">
+  		SELECT id,name,category_id,NAME,subtitle,main_image,sub_images,detail,price,stock,STATUS,create_time,update_time
+		FROM product where id = #{id}
+  	</select>
+  	
+  	<select id="findCategoryName" parameterType="int" resultType="Category">
+  		select * from category where id = #{id}
+  	</select>
+  	
+  	<select id="findCategoryNameById" parameterType="int" resultType="Category">
+  		select * from category where id = #{id}
+  	</select>
+  	
+  	<select id="findProductLikeName" parameterType="string" resultType="Product">
+  		select * from product where name like '%${value}%'
+  	</select>
+  	
+  	<select id="findTotalCountByName" parameterType="String" resultType="int">
+  		select count(*) from product where name like '%${value}%' and status = 1
+  	</select> 
+  	
+  	<select id="findProductByName" parameterType="Map" resultType="Product">
+  		select * from product 
+  		<where>
+  			<if test="name!=null and name != '' ">
+  				and name like '%${name}%'
+  			</if>
+  		</where>
+  		and status = 1 limit #{index},#{pageSize}
+  	</select>
+  	
+  	<select id="findTotalCountById" parameterType="int" resultType="int">
+  		select count(*) from product where category_id = #{id} and status =1
+  	</select>
+  	
+  	<select id="findProductById" parameterType="Map" resultType="Product">
+  		select * from product where category_id = #{id} and status = 1 limit #{index},#{pageSize}
+  	</select>
+  	
+  </mapper>

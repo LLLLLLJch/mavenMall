@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.situ.mall.dao.CategoryMangerDao">
+  
+  <insert id="addFirstCategory" parameterType="Category">
+  	INSERT INTO category(parent_id,NAME,STATUS,create_time)VALUES(0,#{name},#{status},#{create_time})
+  </insert>
+  
+  <select id="findFirstCategoryId" parameterType="Category" resultType="int">
+  	select id from category where name = #{name}
+  </select>
+  
+  <insert id="addSecondCategory" parameterType="Category">
+  	INSERT INTO category(parent_id,NAME,STATUS,create_time)VALUES(#{parent_id},#{name},#{status},#{create_time})
+  </insert>
+  
+  <select id="findTotalCount" parameterType="FindCategoryByCondition" resultType="int">
+  	select count(*) from category 
+  	<where>
+  		<if test="id != null and id != '' ">
+  			and id = #{id}
+  		</if>
+  		<if test="name != null and name != '' ">
+  			and name = #{name}
+  		</if>
+  		<if test="status != null and status != '' ">
+  			and status = #{status}
+  		</if>
+  	</where>
+  </select>
+  
+  <select id="findByCondition" parameterType="Map" resultType="Category">
+  	SELECT id,parent_id,NAME,STATUS,create_time,update_time FROM category 
+  	<where>
+  		<if test="findCategoryByCondition.id != null and findCategoryByCondition.id != '' ">
+  			and id = #{findCategoryByCondition.id}
+  		</if>
+  		<if test="findCategoryByCondition.name != null and findCategoryByCondition.name != '' ">
+  			and name = #{findCategoryByCondition.name}
+  		</if>
+  		<if test="findCategoryByCondition.status != null and findCategoryByCondition.status != '' ">
+  			and status = #{findCategoryByCondition.status}
+  		</if>
+  	</where>
+  		limit #{index},#{findCategoryByCondition.pageSize}
+  </select>
+  
+  <delete id="deleteCategory" parameterType="int">
+  	delete from category where id = #{id}
+  </delete>
+  
+  <select id="toUpdateCategory" parameterType="int" resultType="Category">
+  	SELECT id,parent_id,NAME,STATUS,create_time,update_time FROM category WHERE id = #{id}
+  </select>
+  
+  <update id="update" parameterType="Category">
+  	update category
+  	<set>
+       <if test="parent_id != 0">
+           parent_id=#{parent_id},
+       </if>
+       <if test="name!=null and name!='' ">
+           name=#{name},
+       </if>
+       <if test="status==0">
+           status=0,
+       </if>
+       <if test="status==1">
+       	   status=1,
+       </if>
+       <if test="update_time!=null and update_time!='' ">
+           update_time=#{update_time},
+       </if>
+    </set>
+  		where id = #{id}
+  </update>
+  
+  <update id="updateStatus">
+  	update category 
+  	<set>
+  		<if test="status == 0">
+  			status = 1,
+  		</if>
+  		<if test="status == 1">
+  			status = 0,
+  		</if>
+  	</set>
+  	where id = #{id}
+  </update>
+  	
+  </mapper>

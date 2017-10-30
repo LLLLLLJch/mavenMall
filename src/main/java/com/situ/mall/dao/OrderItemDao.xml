@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.situ.mall.dao.OrderItemDao">
+  	
+  	<select id="findOrderItemByUserId" parameterType="int" resultType="OrderItem">
+  		select * from order_item where user_id=#{userId}
+  	</select>
+  	
+  	<insert id="addOrderItem" parameterType="Map">
+  		insert into order_item(user_id,order_no,product_id,product_name,product_image,
+  		current_unit_price,quantity,total_price,create_time,update_time)values(#{user_id},
+  		#{order_no},#{product.id},#{product.name},#{product.main_image},#{product.price},#{quantity},
+  		#{total_price},now(),now())
+  	</insert>
+  	
+  </mapper>
