@@ -53,7 +53,8 @@ function selectSecond(obj) {
 </script>
 </head>
 <body>
-	<form action="${ctx}/background/update.action" method="post">
+	<form action="${ctx}/background/update.action" method="post" enctype="multipart/form-data" class="form form-horizontal"
+		id="form-add">
 		<div style="width: 400px; margin-left:100px;" class=" animated fadeInRight">
 			<div style="margin-top: 10px;">
 				<input type="text" name="id" value="${product.id}"
@@ -96,6 +97,35 @@ function selectSecond(obj) {
 						<option value="0">下架</option>
 						<option value="1">上架</option>
 				</select>
+			</div>
+			<div class="form-group">
+				<img alt="" src="${product.fullUrl}" width="80px" height="100px">
+			</div>
+			<div class="form-group">
+				<c:forEach items="${list}" var="img">
+					<img alt="" src="${img}" width="60px" height="80px">
+				</c:forEach>
+			</div>
+			<div>
+				${product.detail}
+			</div>
+			<div>
+				<label>产品主图</label> <img alt="" id="imgId" src="" width=100
+				height=100> <input type="hidden" name="main_image"
+				id="mainImage" /> <input type="file" name="pictureFile"
+				onchange="uploadPic();" />
+			</div>
+			<div class="form-group">
+				<label>商品图片</label> <a href="javascript:void(0)"
+					class="picFileUpload" id="picFileUpload">上传图片</a> <input
+					type="hidden" name="sub_images" id="subImages" />
+				<div id="J_imageView"></div>
+			</div>
+			<div class="form-group">
+				<label>商品描述</label>
+				<textarea
+					style="width: 900px; height: 300px; visibility: hidden;"
+				name="detail"></textarea>
 			</div>
 			<div style="margin-top: 10px;">
 				<input type="text" value="<fmt:formatDate value="${product.create_time}"
@@ -158,7 +188,7 @@ function uploadPic() {
         type:"post",
         success: function(data) {
         	alert(data.fileName);
-            $("#imgId").attr("src","/pic/" + data.fileName);
+        	$("#imgId").attr("src", data.filePath);
             $("#mainImage").val(data.fileName);
         }
     };

@@ -10,21 +10,17 @@
 <link rel="stylesheet" type="text/css"
 	href="${pageContext.request.contextPath}/resources/css/cart_style.css" />
 <script type="text/javascript">
-			function add(id){
-				var stock = $("#stock").val();
+			function add(id,stock,price){
 				var num = $("#num"+id).val();
-				var price = $("#price"+id).val();
-				var sum = 0;
 				num++;
-				addProduct(id);
-				$("#productTotal"+id)[0].innerHTML=num*price;
-				if(num>stock){
-					alert("只能购买"+stock+"件");
-					return;
+				if(num >= stock){
+					alert("此商品只能买" + stock + "件"); 
+					return; 
 				}
-				sum += parseFloat($("#productTotal"+id)[0].innerHTML);
 				$("#num"+id).val(num);
-				$("#amount")[0].innerHTML=sum;
+				$('#price'+id).val(num*price);
+				addProduct(id);
+				changeSelectCart();
 			}
 			
 			function addProduct(id){
@@ -37,19 +33,18 @@
 				       );
 			}
 			
-			function sub(id){ 
+			function sub(id,price){ 
 				var num = $("#num"+id).val();
-				var sum = 0;
-				var price = $("#price"+id).val();
-				num--;
-				subProduct(id);
-				if(num==0){
+				if(num == 1){
+					goDelete(id);
 					return;
 				}
-				$("#productTotal"+id)[0].innerHTML=num*price;
-				sum += parseFloat($("#productTotal"+id)[0].innerHTML);
+				num--;
+				
 				$("#num"+id).val(num);
-				$("#amount")[0].innerHTML=sum;
+				$('#price'+id).val(num*price);
+				subProduct(id);
+				changeSelectCart();
 			}
 			
 			function subProduct(id){
@@ -66,13 +61,9 @@
 			    $("input[name=selectIds]").prop("checked", $("#selectAll").is(":checked"));
 			    var obj=document.getElementsByName('selectIds');
 				var sum = 0;
-				var price = 0;
 				for(var i=0; i<obj.length; i++){ 
-				var num = $("#num"+obj[i].value).val();
 					if(obj[i].checked){
-						price = $("#price"+obj[i].value).val();
-						$("#productTotal"+obj[i].value)[0].innerHTML=num*price;
-						sum += parseFloat($("#productTotal"+obj[i].value)[0].innerHTML);
+						sum += parseFloat($("#price"+obj[i].value).val());
 					}
 				}
 				$("#amount")[0].innerHTML=sum;
@@ -83,7 +74,7 @@
 				var sum = 0;
 				for(var i=0; i<obj.length; i++){ 
 					if(obj[i].checked){
-						sum += parseFloat($("#productTotal"+obj[i].value)[0].innerHTML);
+						sum += parseFloat($("#price"+obj[i].value).val());
 					}
 				}
 				$("#amount")[0].innerHTML=sum;
@@ -247,14 +238,13 @@
 					</div>
 					<ul class="car_ul">
 						<li class="num_select"><input class="car_ul_btn1"
-							type="button" value="-" onclick="sub(${cart.id});" /> <input
+							type="button" value="-" onclick="sub(${cart.id},${cart.product.price});" /> <input
 							class="car_ul_text" type="text" value="${cart.quantity}"
 							id="num${cart.id}" /> <input class="car_ul_btn2" type="button"
-							value="+" onclick="add(${cart.id});" /></li>
-						<li class="money"><span style="color: #F41443;"
-							id="productTotal${cart.id}"> ${cart.quantity * cart.product.price}
-						</span> <input type="hidden" id="price${cart.id}"
-							value="${cart.product.price}" /></li>
+							value="+" onclick="add(${cart.id},${cart.product.stock},${cart.product.price});" /></li>
+						<li class="money"><span style="color: #F41443;" name="payment"> ¥
+								<input type="text" value="${cart.product.price*cart.quantity}" id="price${cart.id}"/>
+								 </span></li>
 						<li class="delete"><input type="hidden" value="${cart.id}" />
 							<img src="${ctx}/resources/img/166.png"
 							onclick="goDelete('${cart.id}')" /></li>

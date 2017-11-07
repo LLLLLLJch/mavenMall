@@ -66,5 +66,7 @@ public interface ProductMangerService {
 
 	PageBean<Product> findProductById(Integer id, Integer pageIndex, Integer pageSize);
 
+	Product findProduct(Integer id);
+
 
 }

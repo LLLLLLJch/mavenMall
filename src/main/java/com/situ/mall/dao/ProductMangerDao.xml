@@ -24,6 +24,10 @@
 		FROM product
   	</select>
   	
+  	<select id="findProduct" parameterType="int" resultType="Product">
+  		select * from product where id=#{id}
+  	</select>
+  	
   	<delete id="deleteProduct" parameterType="int">
   		delete from product where id = #{id}
   	</delete>
@@ -46,7 +50,7 @@
   		</association>
   	</resultMap>
   	<select id="findById" resultMap="findProductById">
-  		SELECT c.id AS 'category',c.name as 'category_name',a.id AS 'parent',p.id,p.name,p.subtitle,p.main_image,p.detail,p.price,p.stock,p.create_time,p.update_time
+  		SELECT c.id AS 'category',c.name as 'category_name',a.id AS 'parent',p.id,p.name,p.subtitle,p.main_image,p.sub_images,p.detail,p.price,p.stock,p.create_time,p.update_time
 		FROM category AS c INNER JOIN category AS a 
 		ON c.id=a.parent_id RIGHT JOIN product AS p 
 		ON p.category_id=a.id WHERE p.id=#{id}
@@ -85,6 +89,15 @@
        <if test="subtitle!=null">
            subtitle=#{subtitle},
        </if>
+       <if test="main_image!=null">
+           main_image=#{main_image},
+       </if>
+       <if test="sub_images!=null">
+           sub_images=#{sub_images},
+       </if>
+       <if test="detail!=null">
+           detail=#{detail},
+       </if>
        <if test="price!=0">
            price=#{price},
        </if>
@@ -99,15 +112,6 @@
        </if>
        <if test="update_time!=null">
            update_time=#{update_time},
-       </if>
-       <if test="main_image!=null">
-           main_image=#{main_image},
-       </if>
-       <if test="sub_images!=null">
-           sub_images=#{sub_images},
-       </if>
-       <if test="detail!=null">
-           detail=#{detail},
        </if>
     </set>
   		where id = #{id}

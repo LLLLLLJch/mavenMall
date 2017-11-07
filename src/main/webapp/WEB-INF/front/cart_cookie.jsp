@@ -13,24 +13,29 @@
 <script type="text/javascript"
 	src="${ctx}/resources/thirdlib/layer-v3.1.0/layer/layer.js"></script>
 <script type="text/javascript">
-				function add(id,stock){
-					window.location.href="${ctx}/getDetailPage/getDetailNoUserName.shtml?productId="+id+"&quantity=1";
-					var num = $("#num"+id).val();
-					if(num >= stock){
-						alert("此商品只能买" + stock + "件"); 
-						return; 
-					}
-					$("#num"+id).val(num);
+				function add(id,stock,price){
+							var num = $("#num"+id).val();
+							num++;
+							if(num >= stock){
+								alert("此商品只能买" + stock + "件"); 
+								return; 
+							}
+							$("#num"+id).val(num);
+							$('#price'+id).val(num*price);
+							changeSelectCart();
 				}
 				
-				function sub(id){
+			 	 function sub(id,price){
 					var num = $("#num"+id).val();
 					if(num == 1){
 						godelete(id);
 						return;
 					}
-					window.location.href="${ctx}/getDetailPage/getDetailNoUserName.shtml?productId="+id+"&quantity=-1";
+					num--;
+					
 					$("#num"+id).val(num);
+					$('#price'+id).val(num*price);
+					changeSelectCart();
 				}
 				
 				function godelete(id){
@@ -56,8 +61,27 @@
 					}
 				}
 				
+				function changeSelectCart(){
+					var obj=document.getElementsByName('selectIds');
+					var sum = 0;
+					for(var i=0; i<obj.length; i++){ 
+						if(obj[i].checked){
+							sum += parseFloat($("#price"+obj[i].value).val());
+						}
+					}
+					$("#amount")[0].innerHTML=sum;
+				} 
+				
 				function selectAlls(){
-					  $("input[name=selectIds]").prop("checked", $("#selectAll").is(":checked"));
+					$("input[name=selectIds]").prop("checked", $("#selectAll").is(":checked"));
+					var obj=document.getElementsByName('selectIds');
+					var sum = 0;
+					for(var i=0; i<obj.length; i++){ 
+						if(obj[i].checked){
+							sum += parseFloat($("#price"+obj[i].value).val());
+						}
+					}
+					$("#amount")[0].innerHTML=sum;
 				}
 				
 				function cleanCart(){
@@ -137,6 +161,7 @@
 </head>
 
 <div class="login" id="login">
+	<input id="newNum" value="" type="text"/>
 	<form id="login_form">
 				<ul>
 					<li class="login_title_1">
@@ -273,7 +298,7 @@
 				</div>
 				<div class="car_2_bottom">
 					<div class="car_con_1">
-						<input value="${cartItemVO.product.id}" type="checkbox"
+						<input value="${cartItemVO.product.id}" type="checkbox" onchange="changeSelectCart();"
 							name="selectIds" />
 					</div>
 					<div class="car_con_2">
@@ -296,18 +321,19 @@
 								${cartItemVO.product.price} </span></li>
 						<li class="num_select"><input class="car_ul_btn1"
 							type="button" value="-"
-							onclick="sub(${cartItemVO.product.id},${cartItemVO.product.stock});" />
+							onclick="sub(${cartItemVO.product.id},${cartItemVO.product.price});" />
 							<input class="car_ul_text" type="text" placeholder="1"
 							value="${cartItemVO.quantity}" id="num${cartItemVO.product.id}" />
 							<input class="car_ul_btn2" type="button" value="+"
-							onclick="add(${cartItemVO.product.id},${cartItemVO.product.stock});" />
+							onclick="add(${cartItemVO.product.id},${cartItemVO.product.stock},${cartItemVO.product.price});" />
 						</li>
 						<li class="money"><span style="color: #F41443;"
 							name="payment"> ¥
-								${cartItemVO.product.price*cartItemVO.quantity} </span></li>
+								<input type="text" value="${cartItemVO.product.price*cartItemVO.quantity}" id="price${cartItemVO.product.id}"/>
+								 </span></li>
 						<li class="delete"><a
 							href="javaScript:godelete(${cartItemVO.product.id});"><img
-								src="${ctx}/resources//img/166.png" /></a></li>
+								src="${ctx}/resources/img/166.png" /></a></li>
 					</ul>
 				</div>
 				<div class="clearfix"></div>
@@ -319,8 +345,9 @@
 				<li style="margin-left: 16px; margin-right: 8px;"><input
 					type="checkbox" onclick="selectAlls();" id="selectAll" /></li>
 				<li style="margin-left: 8px; margin-right: 265px;">全选</li>
-				<li style="margin-left: 265px; margin-right: 18px;">总金额（已免运费）：<span
-					style="color: #F41443;">¥${buyCartVO.totalPrice}</span></li>
+				<%-- <li style="margin-left: 265px; margin-right: 18px;">总金额（已免运费）：<span
+					style="color: #F41443;" id="totalPrice">¥${buyCartVO.totalPrice}</span></li> --%>
+				<li>¥<em id="amount">0.00</em><span>总金额（已免运费）：</span></li>
 				<li class="total_right"><a href="javaScript:gotoOrder();">立即结算</a></li>
 				<li class="total_right"><a href="javascript:cleanCart();">清空购物车</a></li>
 			</ul>

@@ -131,6 +131,10 @@
 			function register(){
 				location.href = "${ctx}/getLogin/goRegister.shtml"
 			}
+			
+			function changePic(image){
+				$('#mainImage').attr("src",image);
+			}
 		</script>
 		<style type="text/css">
 			.login{
@@ -285,7 +289,7 @@
 			<div class="left">
 				<ul>
 					<li class="banner_center_left_top">
-						<img src="${product.fullUrl}" width="350" height="350"/>
+						<img id="mainImage" src="${product.fullUrl}" width="350" height="350"/>
 					</li>
 					<li class="banner_center_left_center">
 						<ul>
@@ -294,7 +298,7 @@
 							</li>
 							<c:forEach items="${subImages}" var="image">
 								<li class="small_shop">
-									<img src="${image}" />
+									<a href="javascript:changePic('${image}');"><img src="${image}"/></a>
 								</li>
 							</c:forEach>
 							<li class="left_right_nav">

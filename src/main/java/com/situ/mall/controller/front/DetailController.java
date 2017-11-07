@@ -123,6 +123,7 @@ public class DetailController {
 
 		// 放到域对象中返回到前端展示的这个购物车，需要将Product对象填满数据才行
 		List<CartItemVO> items = buyCartVO.getItems();
+		boolean isSuccess = false;
 		for (CartItemVO item : items) {
 			Product product = productMangerService.findById(item.getProduct().getId());
 			item.setProduct(product);
@@ -131,6 +132,89 @@ public class DetailController {
 		model.addAttribute("buyCartVO", buyCartVO);
 
 		return "cart_cookie";
+	}
+	
+	
+	@RequestMapping("/addDetailNoUserName")
+	@ResponseBody
+	public boolean addDetailNoUserName(Integer quantity, Integer productId, Model model, HttpServletRequest request,
+			HttpServletResponse response) {
+		// springmvc
+		ObjectMapper objectMapper = new ObjectMapper();
+		// 只有对象里面不是null的才转换
+		objectMapper.setSerializationInclusion(Inclusion.NON_NULL);
+
+		BuyCartVO buyCartVO = null;
+		Cookie[] cookies = request.getCookies();
+		// 1.如果cookie有这个购物车对象，那就从cookie里面取出这个购物车对象
+		if (null != cookies && cookies.length > 0) {
+			for (Cookie cookie : cookies) {
+				if ("buy_cart_cookie".equals(cookie.getName())) {
+					// 之前已经有购物车
+					// "{\"items\":[{\"product\":{\"id\":45},\"amount\":1}],\"productId\":45}"
+					String value = cookie.getValue();
+					try {
+						buyCartVO = objectMapper.readValue(value, BuyCartVO.class);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		// 2.如果cookie没有这个购物车对象,才需要new BuyCartVO
+		if (buyCartVO == null) {
+			buyCartVO = new BuyCartVO();
+		}
+
+		// 把购物项放到购物车里面
+		if (null != productId) {
+			Product productTemp = productMangerService.findById(productId);
+			Product product = new Product();
+			product.setId(productId);
+			product.setStock(productTemp.getStock());
+			CartItemVO cartItemVO = new CartItemVO();
+			cartItemVO.setProduct(product);
+			cartItemVO.setQuantity(quantity);
+
+			buyCartVO.add(cartItemVO);
+			buyCartVO.setProductId(productId);
+
+			// 把购物车对象BuyCartVO以json形式写到cookie里面
+			StringWriter stringWriter = new StringWriter();
+			try {
+				objectMapper.writeValue(stringWriter, buyCartVO);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			// 将购物车json数据放到cookie里面
+			Cookie cookie = new Cookie("buy_cart_cookie", stringWriter.toString());
+			// 默认关闭浏览器cookie销毁
+			cookie.setMaxAge(60 * 60 * 24);
+
+			cookie.setPath("/");
+
+			// 将cookie发送给浏览器
+			response.addCookie(cookie);
+		}
+
+		// 放到域对象中返回到前端展示的这个购物车，需要将Product对象填满数据才行
+		List<CartItemVO> items = buyCartVO.getItems();
+		boolean isSuccess = false;
+		for (CartItemVO item : items) {
+			Product product = productMangerService.findById(item.getProduct().getId());
+			item.setProduct(product);
+			if(product != null){
+				return true;
+			}else {
+				return false;
+			}
+		}
+/*
+		model.addAttribute("buyCartVO", buyCartVO);
+
+		return "cart_cookie";*/
+		return isSuccess;
 	}
 
 	@RequestMapping("/getDetailHaveUserName.shtml")
@@ -163,6 +247,82 @@ public class DetailController {
 		isSuccess = cartService.add(cart);
 		return isSuccess;
 		
+	}
+	
+	@RequestMapping("/totalPrice")
+	@ResponseBody
+	public double totalPrice(Integer[] selectIds,Integer quantity, Integer productId, Model model, HttpServletRequest request,
+			HttpServletResponse response) {
+		// springmvc
+		ObjectMapper objectMapper = new ObjectMapper();
+		// 只有对象里面不是null的才转换
+		objectMapper.setSerializationInclusion(Inclusion.NON_NULL);
+
+		BuyCartVO buyCartVO = null;
+		Cookie[] cookies = request.getCookies();
+		// 1.如果cookie有这个购物车对象，那就从cookie里面取出这个购物车对象
+		if (null != cookies && cookies.length > 0) {
+			for (Cookie cookie : cookies) {
+				if ("buy_cart_cookie".equals(cookie.getName())) {
+					// 之前已经有购物车
+					// "{\"items\":[{\"product\":{\"id\":45},\"amount\":1}],\"productId\":45}"
+					String value = cookie.getValue();
+					try {
+						buyCartVO = objectMapper.readValue(value, BuyCartVO.class);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		// 2.如果cookie没有这个购物车对象,才需要new BuyCartVO
+		if (buyCartVO == null) {
+			buyCartVO = new BuyCartVO();
+		}
+
+		// 把购物项放到购物车里面
+		if (null != productId) {
+			Product productTemp = productMangerService.findById(productId);
+			Product product = new Product();
+			product.setId(productId);
+			product.setStock(productTemp.getStock());
+			CartItemVO cartItemVO = new CartItemVO();
+			cartItemVO.setProduct(product);
+			cartItemVO.setQuantity(quantity);
+
+			buyCartVO.add(cartItemVO);
+			buyCartVO.setProductId(productId);
+
+			// 把购物车对象BuyCartVO以json形式写到cookie里面
+			StringWriter stringWriter = new StringWriter();
+			try {
+				objectMapper.writeValue(stringWriter, buyCartVO);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			// 将购物车json数据放到cookie里面
+			Cookie cookie = new Cookie("buy_cart_cookie", stringWriter.toString());
+			// 默认关闭浏览器cookie销毁
+			cookie.setMaxAge(60 * 60 * 24);
+
+			cookie.setPath("/");
+
+			// 将cookie发送给浏览器
+			response.addCookie(cookie);
+		}
+
+		// 放到域对象中返回到前端展示的这个购物车，需要将Product对象填满数据才行
+		List<CartItemVO> items = buyCartVO.getItems();
+		boolean isSuccess = false;
+		double totalPrice = 0.0;
+		for (CartItemVO item : items) {
+			Product product = productMangerService.findById(item.getProduct().getId());
+			item.setProduct(product);
+			totalPrice += product.getPrice()*item.getQuantity();
+		}
+		System.out.println("------------------------"+selectIds);
+		return totalPrice;
 	}
 
 }

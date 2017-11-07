@@ -24,12 +24,11 @@ public class LoginFilter implements Filter{
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		 HttpServletRequest req = (HttpServletRequest) request;
+		   HttpServletRequest req = (HttpServletRequest) request;
 	       HttpServletResponse resp = (HttpServletResponse) response;
 	       String uri = req.getRequestURI();
 	       // /Java1705Web/login.jsp   /Java1705Web/loginFilter
 	       System.out.println(uri);
-	       System.out.println("11111111111111111111111111111");
 	       String requestPath = uri.substring(uri.lastIndexOf("/") + 1, uri.length());
 	       if (	 requestPath.equals("checkImg")|| requestPath.equals("login.action")
 	    		   || requestPath.equals("login.jsp")

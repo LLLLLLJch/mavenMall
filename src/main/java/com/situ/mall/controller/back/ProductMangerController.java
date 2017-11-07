@@ -171,10 +171,13 @@ public class ProductMangerController {
 	@RequestMapping("/toUpdateProduct")
 	public String toUpdateProduct(Integer id,Integer category_id,Integer categoryId, Model model) {
 		Product product = productMangerService.findById(id);
+		Product product2 = productMangerService.findProduct(id);
 		Category categoryParent = productMangerService.findCategoryParent(categoryId);
 		Category categorySon = productMangerService.findCategorySon(category_id);
-		System.out.println("--------------------"+categoryParent);
-		System.out.println("--------------------"+categorySon);
+		System.out.println("-------------"+product);
+		String subImages = product2.getSub_images();
+		String[] list = subImages.split(",");
+		model.addAttribute("list", list);
 		model.addAttribute("product", product);
 		model.addAttribute("categoryParent", categoryParent);
 		model.addAttribute("categorySon", categorySon);

@@ -75,4 +75,6 @@ public interface ProductMangerDao {
 
 	List<Product> findProductById(Map<Object, Object> map);
 
+	Product findProduct(Integer id);
+
 }

@@ -81,7 +81,7 @@
 				$("#mainImage").val(data.fileName);
 			}
 		};
-s		$("#form-add").ajaxSubmit(options);
+		$("#form-add").ajaxSubmit(options);
 	}
 
 	function add() {

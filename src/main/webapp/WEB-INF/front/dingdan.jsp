@@ -171,7 +171,7 @@
 							</dl>
 						</div>
 					</li>
-					<li><a href="#">我的云购</a></li>
+					<li><a href="${ctx}/index.shtml">我的云购</a></li>
 					<li><a href="#">我的收藏</a></li>
 					<li><a href="#">会员中心</a></li>
 					<li><a href="#">客户服务</a></li>

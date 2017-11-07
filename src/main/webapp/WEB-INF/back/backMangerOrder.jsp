@@ -39,8 +39,6 @@
 						<td>总价</td>
 						<td>订单创建时间</td>
 						<td>查看订单详情</td>
-						<td>删除</td>
-						<td>修改</td>
 					</tr>
 					<c:forEach items="${list}" var="order">
 						<tr>
@@ -53,8 +51,6 @@
 							<td><fmt:formatDate value="${order.create_time}"
 										pattern="yyyy-MM-dd hh:mm:ss" /></td>
 							<td><input type="button" value="查看订单详情" onclick="seeOrderDetail('${order.order_no}');"/></td>
-							<td><a href="javascript:delSlideShow(${slideShow.id})">删除</a></td>
-							<td><a href="${ctx}/backgroundCategory/toUpdateCategory.action?id=${category.id}">修改</a></td>
 						</tr>
 					</c:forEach>
 				</table>

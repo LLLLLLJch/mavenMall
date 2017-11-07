@@ -270,5 +270,10 @@ public class ProductMangerServiceImpl implements ProductMangerService{
 		pageBean.setList(list);
 		return pageBean;
 	}
+
+	@Override
+	public Product findProduct(Integer id) {
+		return productMangerDao.findProduct(id);
+	}
 	
 }
