@@ -125,7 +125,7 @@
 				<div class="right">
 					<ul>
 						<#if "${username}"!=null>
-								<li><a href="/java1707Mall/getLogin/goLogin.shtml" target="_blank">欢迎 : ${username }</a></li>
+								<li><a href="/java1707Mall/getLogin/goLogin.shtml" target="_blank">欢迎 : ${username}</a></li>
 								<li><a href="javaScript:goexist();" target="_blank">注销</a></li>
 							<#else>
 								<li><a href="javaScript:goLogin();" target="_blank">请登录</a></li>

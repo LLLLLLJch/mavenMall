@@ -74,14 +74,15 @@
 				
 				function selectAlls(){
 					$("input[name=selectIds]").prop("checked", $("#selectAll").is(":checked"));
-					var obj=document.getElementsByName('selectIds');
+					 changeSelectCart();
+					/* var obj=document.getElementsByName('selectIds');
 					var sum = 0;
 					for(var i=0; i<obj.length; i++){ 
 						if(obj[i].checked){
 							sum += parseFloat($("#price"+obj[i].value).val());
 						}
 					}
-					$("#amount")[0].innerHTML=sum;
+					$("#amount")[0].innerHTML=sum; */
 				}
 				
 				function cleanCart(){
